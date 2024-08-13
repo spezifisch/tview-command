@@ -1,0 +1,69 @@
+[context.Default]
+d = "deleteTrack"
+a = "addToQueue"
+Q = "quit"
+# leader key
+SPC = "openCommandPalette"
+
+[context.Global]
+ESC = "closeModal"
+CTRL-C = "copy"
+CTRL-V = "paste"
+CTRL-X = "cut"
+CTRL-Z = "undo"
+
+[context.Empty]
+# context with no bindings
+
+[context.Modal]
+context_override = "Empty"
+ESC = "closeModal"
+enter = "confirmAction"
+n = "nextOption"
+p = "previousOption"
+
+[context.TextField]
+context_override = "Empty"
+enter = "submitText"
+ESC = "cancelInput"
+CTRL-U = "clearText"
+
+[context.ArticlePreset]
+a = "queue.AddTrack"
+A = "playlists.AddTrackToPlaylist"
+y = "favoriteTrack toggle"
+
+[context.SearchPreset]
+"/" = "search"
+
+[context.ListPreset]
+g = "goToTop"
+G = "goToBottom"
+
+[context.Queue]
+context_add = "ArticlePreset,ListPreset"
+d = "queue.deleteTrack"
+m = "queue.moveTrack"
+s = "shuffleQueue"
+
+[context.Playlist]
+context_add = "ListPreset"
+n = "playlistman.New"
+r = "playlistman.Rename"
+D = "playlistman.Delete"
+a = "playlist.Play"
+s = "playlist.ShufflePlay"
+
+[context.Playlist.TrackList]
+context_add = "ArticlePreset,ListPreset"
+d = "playlist.deleteTrack"
+
+[context.Browser]
+context_add = "ArticlePreset,SearchPreset"
+S = "shufflePlay"
+v = "viewArtist"
+a = "addArtistToQueue; cursorDown"
+
+[context.Browser.AlbumList]
+context_add = "ArticlePreset"
+a = "addAlbumToQueue; cursorDown"
