@@ -1,135 +1,111 @@
-* tview-command Configuration Guide
+#+title: tview-command Configuration Guide
+#+author: spezifisch
+#+date: 2024-08-14
+#+description: This guide provides an introduction to the context stacking system used in the TView-Command framework and offers a detailed explanation of an example configuration file.
 
-** Introduction to Context Stacking
+* Introduction
 
-In `tview-command`, a **context** represents a specific state or mode of your application where certain key bindings are active. Contexts allow your application to respond differently to the same key press depending on the current view or modal the user is interacting with. 
+This guide introduces the context stacking system used in the `tview-command` framework, a system designed to handle keybindings in a hierarchical and context-sensitive manner. The configuration file below is written in TOML format, and each context defines specific keybindings that are only active when the context is in focus. 
 
-The context system is hierarchical, meaning more specific contexts (like modals or text fields) can override or extend the key bindings of more general contexts (like global or default contexts). This system makes it easy to define complex behaviors in a structured and maintainable way, ensuring that your application remains intuitive and responsive to user inputs.
+Contexts can inherit keybindings from other contexts using the `context_add` option, allowing for modular and reusable configurations. The special `[context.Empty]` and `[context.Modal]` contexts provide base layers that can be used to override or reset keybindings in specific situations.
 
-For example, consider the **QueueContext**: when the queue page is active, this context may define key bindings for actions like deleting or moving tracks. If a modal dialog is opened on top of this, a **ModalContext** can temporarily override certain key bindings (such as using `ESC` to close the modal) without affecting the underlying **QueueContext**. This ensures that each part of your application has the correct set of key bindings active at any given time.
+* Key Concepts
 
-*** Key Concepts
+1. **Contexts**: Contexts represent different states or screens in your application. For example, the "Queue" context might be active when the queue view is in focus. Keybindings are only active within their defined context, allowing the same key to perform different actions depending on the current context.
 
-- **Context:** A named state within the application where specific key bindings are active.
-- **Default Context:** The base context that is active when no other, more specific context is active.
-- **Context Stacking:** The process of stacking contexts hierarchically, allowing more specific contexts to override or augment the bindings of more general contexts.
-- **Context Override:** A mechanism to completely replace the active context with another, ignoring the previous context.
-- **Context Addition:** A mechanism to add additional bindings to the active context without replacing it.
-- **Alphanumeric Capture:** A special mode where certain key inputs (like letters and numbers) are captured for text input fields, bypassing other key bindings.
+2. **Context Stacking**: Contexts can be stacked, meaning that a context can inherit keybindings from one or more parent contexts. This is useful for creating modular configurations where common actions can be defined once and reused across multiple contexts.
 
-** Detailed Configuration Example
+3. **Overrides and Additions**: Contexts can override keybindings from their parent contexts using the `context_override` option or add new keybindings on top of the inherited ones using the `context_add` option. This provides flexibility in configuring complex interactions.
 
-Below is a detailed example of how to configure the context system in `tview-command`. Each section explains the purpose of the context and the key bindings within it.
+4. **Special Contexts**: The `Empty` context serves as a blank slate with no keybindings, which can be used to reset a context. The `Modal` context is designed for modal dialogs, where it is important to limit the available keybindings to those relevant for the modal interaction.
 
-#+begin_src toml :tangle config.toml
-# Default context with common key bindings
+* Configuration
+
+#+begin_src toml
 [context.Default]
 d = "deleteTrack"
 a = "addToQueue"
 Q = "quit"
+# leader key
 SPC = "openCommandPalette"
-
-# This is the default context. It is active whenever there is no more specific context in focus.
-# It includes general key bindings like 'd' for deleting a track, 'a' for adding to the queue, 
-# 'Q' for quitting the application, and 'SPC' for opening the command palette.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Global context with bindings that are always active
+This section defines the `Default` context. The `DefaultContext` is the fallback context for general keybindings. Here, `d` deletes a track, `a` adds a track to the queue, and `SPC` opens the command palette. The `Q` key is mapped to quit the application.
+
+#+begin_src toml
 [context.Global]
 ESC = "closeModal"
 CTRL-C = "copy"
 CTRL-V = "paste"
 CTRL-X = "cut"
 CTRL-Z = "undo"
-
-# The global context defines key bindings that are always active, regardless of the current view or state.
-# These bindings typically include actions like copying (CTRL-C), pasting (CTRL-V), cutting (CTRL-X), 
-# undoing (CTRL-Z), and closing a modal with ESC.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Empty context as a placeholder for no bindings
+The `Global` context contains keybindings that are universally available across all contexts, such as standard clipboard operations and modal closing.
+
+#+begin_src toml
 [context.Empty]
-
-# The empty context acts as a placeholder for situations where no key bindings should be active.
-# It can be used to override other contexts temporarily, ensuring no unintended actions are taken.
+# context with no bindings
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Modal context, which overrides other contexts when a modal is open
+The `Empty` context is a special context that acts as a placeholder with no bindings. It can be used to reset or clear keybindings in other contexts.
+
+#+begin_src toml
 [context.Modal]
 context_override = "Empty"
 ESC = "closeModal"
 enter = "confirmAction"
 n = "nextOption"
 p = "previousOption"
-
-# The modal context is activated whenever a modal dialog is open. It overrides other contexts using the 
-# 'context_override' directive, which ensures that no other key bindings interfere with the modal.
-# This context includes bindings like 'ESC' to close the modal, 'enter' to confirm an action, 
-# and 'n'/'p' to navigate options within the modal.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Text field context, specialized for handling text input
+The `Modal` context is used for modal dialogs. It overrides the `Empty` context to ensure that only modal-specific keybindings are active. This includes options like closing the modal with `ESC`, confirming with `enter`, and navigating with `n` and `p`.
+
+#+begin_src toml
 [context.TextField]
 context_override = "Empty"
 enter = "submitText"
 ESC = "cancelInput"
 CTRL-U = "clearText"
-
-# The text field context is designed for when a text field is focused. It overrides other contexts to prevent 
-# unintended actions while typing. The context includes 'enter' for submitting text, 'ESC' to cancel input,
-# and 'CTRL-U' to clear the text field.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Preset context for managing articles
+The `TextField` context is for text input fields. It overrides the `Empty` context to deactivate other bindings, allowing only text-related actions like submitting text, canceling input, and clearing the text field.
+
+#+begin_src toml
 [context.ArticlePreset]
 a = "queue.AddTrack"
 A = "playlists.AddTrackToPlaylist"
 y = "favoriteTrack toggle"
-
-# The ArticlePreset context is a reusable context that defines common actions related to tracks or articles.
-# It can be added to other contexts to provide additional functionality. For example, 'a' queues a track,
-# 'A' adds a track to a playlist, and 'y' toggles the track as a favorite.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Preset context for handling search actions
+The `ArticlePreset` context contains keybindings related to article or track management. For example, `a` adds the current track to the queue, `A` adds it to a playlist, and `y` toggles the track as a favorite.
+
+#+begin_src toml
 [context.SearchPreset]
 "/" = "search"
-
-# The SearchPreset context defines a binding for initiating a search. It can be added to contexts where
-# search functionality is relevant, such as a browser or playlist context. The '/' key is used to trigger the search.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Preset context for handling list navigation
+The `SearchPreset` context defines a keybinding for initiating a search, using the `/` key.
+
+#+begin_src toml
 [context.ListPreset]
 g = "goToTop"
 G = "goToBottom"
-
-# The ListPreset context provides bindings for navigating lists. The 'g' key moves the selection to the top of the list,
-# while 'G' moves it to the bottom. This preset can be added to any context that involves list navigation.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Queue context, adding additional presets and bindings specific to the queue
+The `ListPreset` context includes keybindings for navigating lists. `g` jumps to the top of the list, and `G` goes to the bottom.
+
+#+begin_src toml
 [context.Queue]
 context_add = "ArticlePreset,ListPreset"
 d = "queue.deleteTrack"
 m = "queue.moveTrack"
 s = "shuffleQueue"
-
-# The QueueContext is specific to the queue view of the application. It adds the ArticlePreset and ListPreset contexts,
-# bringing in their respective key bindings. Additionally, it defines bindings like 'd' to delete a track,
-# 'm' to move a track, and 's' to shuffle the queue.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Playlist context, adding bindings specific to playlist management
+The `Queue` context is specific to queue management. It inherits from both the `ArticlePreset` and `ListPreset` contexts, allowing it to handle track management and list navigation. Additional keybindings include deleting a track with `d`, moving a track with `m`, and shuffling the queue with `s`.
+
+#+begin_src toml
 [context.Playlist]
 context_add = "ListPreset"
 n = "playlistman.New"
@@ -137,52 +113,42 @@ r = "playlistman.Rename"
 D = "playlistman.Delete"
 a = "playlist.Play"
 s = "playlist.ShufflePlay"
-
-# The PlaylistContext is tailored for managing playlists. It adds the ListPreset context and includes additional bindings 
-# specific to playlists, such as 'n' to create a new playlist, 'r' to rename, 'D' to delete, 'a' to play a playlist, 
-# and 's' to shuffle play.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Context for managing tracks within a playlist
+The `Playlist` context is for playlist management. It inherits from `ListPreset` for navigation and adds playlist-specific actions like creating, renaming, and deleting playlists. It also includes playback controls.
+
+#+begin_src toml
 [context.Playlist.TrackList]
 context_add = "ArticlePreset,ListPreset"
 d = "playlist.deleteTrack"
-
-# The Playlist.TrackList context focuses on the track list within a playlist. It inherits the ArticlePreset and ListPreset contexts,
-# and defines the 'd' key for deleting a track from the playlist.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Browser context for browsing music
+The `Playlist.TrackList` context handles track management within a playlist. It inherits from both `ArticlePreset` and `ListPreset` and adds a specific binding for deleting tracks from the playlist.
+
+#+begin_src toml
 [context.Browser]
 context_add = "ArticlePreset,SearchPreset"
 S = "shufflePlay"
 v = "viewArtist"
 a = "addArtistToQueue; cursorDown"
-
-# The BrowserContext is used when browsing music. It combines the ArticlePreset and SearchPreset contexts and includes additional
-# bindings for browsing actions. For instance, 'S' shuffles the current view, 'v' views the artist's details, and 'a' adds 
-# the artist to the queue and moves the cursor down.
 #+end_src
 
-#+begin_src toml :tangle config.toml
-# Context for managing albums within the browser
+The `Browser` context is for navigating and managing content in a browsing interface. It inherits from `ArticlePreset` and `SearchPreset`, and includes keybindings for shuffling playback, viewing artist details, and adding the artist to the queue.
+
+#+begin_src toml
 [context.Browser.AlbumList]
 context_add = "ArticlePreset"
 a = "addAlbumToQueue; cursorDown"
-
-# The Browser.AlbumList context handles interactions within an album list in the browser. It inherits the ArticlePreset context
-# and adds the 'a' key binding to add the album to the queue and move the cursor down.
 #+end_src
 
-** Conclusion
+The `Browser.AlbumList` context is a sub-context of the `Browser` that manages album lists. It inherits from `ArticlePreset` and adds a keybinding for adding an album to the queue while moving the cursor down.
 
-This configuration guide demonstrates how to set up a hierarchical context system in `tview-command`. By carefully organizing key bindings into contexts and using context stacking, you can ensure that your application's user interface responds appropriately to different user interactions. 
+* Rendering the Configuration
 
-** Rendering the Config
+To generate the `config.toml` file from this Org-mode file, you can use the following command within Emacs:
 
-To generate the `config.toml` file from this annotated Org-mode file, simply run the following command in Emacs:
+#+begin_src org
+(org-babel-tangle)
+#+end_src
 
-```emacs-lisp
-M-x org-babel-tangle
+This command will extract the TOML code blocks and save them as a `config.toml` file, ready for use in your `tview-command` project.
