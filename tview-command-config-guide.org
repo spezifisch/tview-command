@@ -11,13 +11,13 @@ Contexts can inherit keybindings from other contexts using the `context_add` opt
 
 * Key Concepts
 
-1. **Contexts**: Contexts represent different states or screens in your application. For example, the "Queue" context might be active when the queue view is in focus. Keybindings are only active within their defined context, allowing the same key to perform different actions depending on the current context.
+1. Contexts: Contexts represent different states or screens in your application. For example, the "Queue" context might be active when the queue view is in focus. Keybindings are only active within their defined context, allowing the same key to perform different actions depending on the current context.
 
-2. **Context Stacking**: Contexts can be stacked, meaning that a context can inherit keybindings from one or more parent contexts. This is useful for creating modular configurations where common actions can be defined once and reused across multiple contexts.
+2. Context Stacking: Contexts can be stacked, meaning that a context can inherit keybindings from one or more parent contexts. This is useful for creating modular configurations where common actions can be defined once and reused across multiple contexts.
 
-3. **Overrides and Additions**: Contexts can override keybindings from their parent contexts using the `context_override` option or add new keybindings on top of the inherited ones using the `context_add` option. This provides flexibility in configuring complex interactions.
+3. Overrides and Additions: Contexts can override keybindings from their parent contexts using the `context_override` option or add new keybindings on top of the inherited ones using the `context_add` option. This provides flexibility in configuring complex interactions.
 
-4. **Special Contexts**: The `Empty` context serves as a blank slate with no keybindings, which can be used to reset a context. The `Modal` context is designed for modal dialogs, where it is important to limit the available keybindings to those relevant for the modal interaction.
+4. Special Contexts: The `Empty` context serves as a blank slate with no keybindings, which can be used to reset a context. The `Modal` context is designed for modal dialogs, where it is important to limit the available keybindings to those relevant for the modal interaction.
 
 * Configuration
 
