@@ -66,5 +66,6 @@ jobs:
         with:
           file: coverage.out
           flags: unittests
-          name: codecov-umbrella
           fail_ci_if_error: true
+          name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
