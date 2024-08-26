@@ -1,0 +1,154 @@
+#+title: tview-command Configuration Guide
+#+author: spezifisch
+#+date: 2024-08-14
+#+description: This guide provides an introduction to the context stacking system used in the TView-Command framework and offers a detailed explanation of an example configuration file.
+
+* Introduction
+
+This guide introduces the context stacking system used in the `tview-command` framework, a system designed to handle keybindings in a hierarchical and context-sensitive manner. The configuration file below is written in TOML format, and each context defines specific keybindings that are only active when the context is in focus. 
+
+Contexts can inherit keybindings from other contexts using the `context_add` option, allowing for modular and reusable configurations. The special `[context.Empty]` and `[context.Modal]` contexts provide base layers that can be used to override or reset keybindings in specific situations.
+
+* Key Concepts
+
+1. Contexts: Contexts represent different states or screens in your application. For example, the "Queue" context might be active when the queue view is in focus. Keybindings are only active within their defined context, allowing the same key to perform different actions depending on the current context.
+
+2. Context Stacking: Contexts can be stacked, meaning that a context can inherit keybindings from one or more parent contexts. This is useful for creating modular configurations where common actions can be defined once and reused across multiple contexts.
+
+3. Overrides and Additions: Contexts can override keybindings from their parent contexts using the `context_override` option or add new keybindings on top of the inherited ones using the `context_add` option. This provides flexibility in configuring complex interactions.
+
+4. Special Contexts: The `Empty` context serves as a blank slate with no keybindings, which can be used to reset a context. The `Modal` context is designed for modal dialogs, where it is important to limit the available keybindings to those relevant for the modal interaction.
+
+* Configuration
+
+#+begin_src toml
+[context.Default]
+d = "deleteTrack"
+a = "addToQueue"
+Q = "quit"
+# leader key
+SPC = "openCommandPalette"
+#+end_src
+
+This section defines the `Default` context. The `DefaultContext` is the fallback context for general keybindings. Here, `d` deletes a track, `a` adds a track to the queue, and `SPC` opens the command palette. The `Q` key is mapped to quit the application.
+
+#+begin_src toml
+[context.Global]
+ESC = "closeModal"
+CTRL-C = "copy"
+CTRL-V = "paste"
+CTRL-X = "cut"
+CTRL-Z = "undo"
+#+end_src
+
+The `Global` context contains keybindings that are universally available across all contexts, such as standard clipboard operations and modal closing.
+
+#+begin_src toml
+[context.Empty]
+# context with no bindings
+#+end_src
+
+The `Empty` context is a special context that acts as a placeholder with no bindings. It can be used to reset or clear keybindings in other contexts.
+
+#+begin_src toml
+[context.Modal]
+context_override = "Empty"
+ESC = "closeModal"
+enter = "confirmAction"
+n = "nextOption"
+p = "previousOption"
+#+end_src
+
+The `Modal` context is used for modal dialogs. It overrides the `Empty` context to ensure that only modal-specific keybindings are active. This includes options like closing the modal with `ESC`, confirming with `enter`, and navigating with `n` and `p`.
+
+#+begin_src toml
+[context.TextField]
+context_override = "Empty"
+enter = "submitText"
+ESC = "cancelInput"
+CTRL-U = "clearText"
+#+end_src
+
+The `TextField` context is for text input fields. It overrides the `Empty` context to deactivate other bindings, allowing only text-related actions like submitting text, canceling input, and clearing the text field.
+
+#+begin_src toml
+[context.ArticlePreset]
+a = "queue.AddTrack"
+A = "playlists.AddTrackToPlaylist"
+y = "favoriteTrack toggle"
+#+end_src
+
+The `ArticlePreset` context contains keybindings related to article or track management. For example, `a` adds the current track to the queue, `A` adds it to a playlist, and `y` toggles the track as a favorite.
+
+#+begin_src toml
+[context.SearchPreset]
+"/" = "search"
+#+end_src
+
+The `SearchPreset` context defines a keybinding for initiating a search, using the `/` key.
+
+#+begin_src toml
+[context.ListPreset]
+g = "goToTop"
+G = "goToBottom"
+#+end_src
+
+The `ListPreset` context includes keybindings for navigating lists. `g` jumps to the top of the list, and `G` goes to the bottom.
+
+#+begin_src toml
+[context.Queue]
+context_add = "ArticlePreset,ListPreset"
+d = "queue.deleteTrack"
+m = "queue.moveTrack"
+s = "shuffleQueue"
+#+end_src
+
+The `Queue` context is specific to queue management. It inherits from both the `ArticlePreset` and `ListPreset` contexts, allowing it to handle track management and list navigation. Additional keybindings include deleting a track with `d`, moving a track with `m`, and shuffling the queue with `s`.
+
+#+begin_src toml
+[context.Playlist]
+context_add = "ListPreset"
+n = "playlistman.New"
+r = "playlistman.Rename"
+D = "playlistman.Delete"
+a = "playlist.Play"
+s = "playlist.ShufflePlay"
+#+end_src
+
+The `Playlist` context is for playlist management. It inherits from `ListPreset` for navigation and adds playlist-specific actions like creating, renaming, and deleting playlists. It also includes playback controls.
+
+#+begin_src toml
+[context.Playlist.TrackList]
+context_add = "ArticlePreset,ListPreset"
+d = "playlist.deleteTrack"
+#+end_src
+
+The `Playlist.TrackList` context handles track management within a playlist. It inherits from both `ArticlePreset` and `ListPreset` and adds a specific binding for deleting tracks from the playlist.
+
+#+begin_src toml
+[context.Browser]
+context_add = "ArticlePreset,SearchPreset"
+S = "shufflePlay"
+v = "viewArtist"
+a = "addArtistToQueue; cursorDown"
+#+end_src
+
+The `Browser` context is for navigating and managing content in a browsing interface. It inherits from `ArticlePreset` and `SearchPreset`, and includes keybindings for shuffling playback, viewing artist details, and adding the artist to the queue.
+
+#+begin_src toml
+[context.Browser.AlbumList]
+context_add = "ArticlePreset"
+a = "addAlbumToQueue; cursorDown"
+#+end_src
+
+The `Browser.AlbumList` context is a sub-context of the `Browser` that manages album lists. It inherits from `ArticlePreset` and adds a keybinding for adding an album to the queue while moving the cursor down.
+
+* Rendering the Configuration
+
+To generate the `config.toml` file from this Org-mode file, you can use the following command within Emacs:
+
+#+begin_src org
+(org-babel-tangle)
+#+end_src
+
+This command will extract the TOML code blocks and save them as a `config.toml` file, ready for use in your `tview-command` project.
