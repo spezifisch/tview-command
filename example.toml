@@ -1,52 +1,52 @@
-[context.Default]
+[Default.bindings]
 d = "deleteTrack"
 a = "addToQueue"
 Q = "quit"
 # leader key
 SPC = "openCommandPalette"
 
-[context.Global]
+[Global.bindings]
 ESC = "closeModal"
 CTRL-C = "copy"
 CTRL-V = "paste"
 CTRL-X = "cut"
 CTRL-Z = "undo"
 
-[context.Empty]
+[Empty.bindings]
 # context with no bindings
 
-[context.Modal]
+[Modal.bindings]
 context_override = "Empty"
 ESC = "closeModal"
 enter = "confirmAction"
 n = "nextOption"
 p = "previousOption"
 
-[context.TextField]
+[TextField.bindings]
 context_override = "Empty"
 enter = "submitText"
 ESC = "cancelInput"
 CTRL-U = "clearText"
 
-[context.ArticlePreset]
+[ArticlePreset.bindings]
 a = "queue.AddTrack"
 A = "playlists.AddTrackToPlaylist"
 y = "favoriteTrack toggle"
 
-[context.SearchPreset]
+[SearchPreset.bindings]
 "/" = "search"
 
-[context.ListPreset]
+[ListPreset.bindings]
 g = "goToTop"
 G = "goToBottom"
 
-[context.Queue]
+[Queue.bindings]
 context_add = "ArticlePreset,ListPreset"
 d = "queue.deleteTrack"
 m = "queue.moveTrack"
 s = "shuffleQueue"
 
-[context.Playlist]
+[Playlist.bindings]
 context_add = "ListPreset"
 n = "playlistman.New"
 r = "playlistman.Rename"
@@ -54,16 +54,16 @@ D = "playlistman.Delete"
 a = "playlist.Play"
 s = "playlist.ShufflePlay"
 
-[context.Playlist.TrackList]
+[Playlist.TrackList.bindings]
 context_add = "ArticlePreset,ListPreset"
 d = "playlist.deleteTrack"
 
-[context.Browser]
+[Browser.bindings]
 context_add = "ArticlePreset,SearchPreset"
 S = "shufflePlay"
 v = "viewArtist"
 a = "addArtistToQueue; cursorDown"
 
-[context.Browser.AlbumList]
+[Browser.AlbumList.bindings]
 context_add = "ArticlePreset"
 a = "addAlbumToQueue; cursorDown"

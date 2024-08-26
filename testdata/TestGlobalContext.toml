@@ -1,0 +1,5 @@
+[Default.bindings]
+SPC = "openCommandPalette"
+
+[Global.bindings]
+ESC = "closeModal"
