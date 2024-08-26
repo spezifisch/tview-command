@@ -2,7 +2,7 @@
 a = "addToQueue"
 
 [Modal]
-context_override = ["Default"]
+context_override = ["TextField"]
 [Modal.bindings]
 ESC = "closeModal"
 

@@ -1,7 +1,6 @@
 package keybinding
 
 import (
-	"errors"
 	"log"
 
 	"github.com/BurntSushi/toml"
@@ -11,49 +10,36 @@ type Config map[string]Context
 
 type Context struct {
 	Bindings        map[string]string `toml:"bindings"`
-	ContextAdd      []string          `toml:"context_add"`
-	ContextOverride []string          `toml:"context_override"` // Change to slice of strings
-}
-
-func validateContextAdd(config Config) error {
-	for contextName, context := range config {
-		for _, add := range context.ContextAdd {
-			if _, exists := config[add]; !exists {
-				return errors.New("context_add refers to an invalid or missing context: " + add + " in context: " + contextName)
-			}
-		}
-	}
-	return nil
-}
-
-func validateContextOverride(config Config) error {
-	for contextName, context := range config {
-		for _, override := range context.ContextOverride {
-			if _, exists := config[override]; !exists {
-				return errors.New("context_override refers to an invalid or missing context: " + override + " in context: " + contextName)
-			}
-		}
-	}
-	return nil
+	ContextAdd      []string          `toml:"context_add,omitempty"`
+	ContextOverride []string          `toml:"context_override,omitempty"`
 }
 
 func LoadConfig(path string) (*Config, error) {
 	var config Config
 	if _, err := toml.DecodeFile(path, &config); err != nil {
-		log.Fatalf("Error parsing config: %s", err)
 		return nil, err
 	}
 
-	// Validate context_add references
-	if err := validateContextAdd(config); err != nil {
+	//log.Printf("Config: %+v\n", config)
+
+	// Validate the config for cycles
+	if err := DetectCycleAndValidate(config); err != nil {
 		return nil, err
 	}
 
-	// Validate context_override references
-	if err := validateContextOverride(config); err != nil {
-		return nil, err
+	// Ensure that the config has at least one context with bindings
+	hasBindings := false
+	for _, context := range config {
+		if len(context.Bindings) > 0 {
+			hasBindings = true
+			break
+		}
 	}
 
-	log.Printf("Config Loaded: %+v\n", config)
+	if !hasBindings {
+		log.Println("Warning: Config has no bindings defined.")
+	}
+
+	// It's okay if the config is empty
 	return &config, nil
 }
