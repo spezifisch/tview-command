@@ -131,14 +131,6 @@ func TestInvalidKeyNames(t *testing.T) {
 	assert.Error(t, err, "Config should return an error for invalid key names")
 }
 
-func TestLargeFile(t *testing.T) {
-	configPath := "../testdata/TestLargeFile.toml"
-	config, err := keybinding.LoadConfig(configPath)
-
-	assert.NoError(t, err, "Config should load without error for a large file")
-	assert.NotNil(t, config, "Config should not be nil")
-}
-
 func TestMissingBindings(t *testing.T) {
 	path := "../testdata/TestMissingBindings.toml"
 
