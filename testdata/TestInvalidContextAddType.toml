@@ -1,0 +1,3 @@
+[Queue]
+bindings = { d = "queue.deleteTrack", m = "queue.moveTrack", s = "shuffleQueue" }
+context_add = "ArticlePreset,ListPreset"  # This should be a list, but it's a string, causing the error.

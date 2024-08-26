@@ -43,7 +43,7 @@ g = "goToTop"
 G = "goToBottom"
 
 [Queue]
-context_add = "ArticlePreset,ListPreset"
+context_add = ["ArticlePreset", "ListPreset"]
 [Queue.bindings]
 d = "queue.deleteTrack"
 m = "queue.moveTrack"
@@ -59,12 +59,12 @@ a = "playlist.Play"
 s = "playlist.ShufflePlay"
 
 [Playlist.TrackList]
-context_add = "ArticlePreset,ListPreset"
+context_add = ["ArticlePreset", "ListPreset"]
 [Playlist.TrackList.bindings]
 d = "playlist.deleteTrack"
 
 [Browser]
-context_add = "ArticlePreset,SearchPreset"
+context_add = ["ArticlePreset", "SearchPreset"]
 [Browser.bindings]
 S = "shufflePlay"
 v = "viewArtist"

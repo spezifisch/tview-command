@@ -1,0 +1,7 @@
+[Queue]
+context_add = [
+    "ArticlePreset",
+    "ListPreset",
+] # Correct usage: context_add is a list of strings.
+[ArticlePreset]
+[ListPreset]

@@ -6,7 +6,7 @@ ESC = "closeModal"
 [Empty]
 
 [Modal]
-context_override = "Empty"
+context_override = ["Empty"]
 
 [TextField]
-context_override = "Empty"
+context_override = ["Empty"]

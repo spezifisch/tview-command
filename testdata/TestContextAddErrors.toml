@@ -1,9 +1,9 @@
 [Queue]
-context_add = "NonExistentContext"
+context_add = ["NonExistentContext"]
 [Queue.bindings]
 d = "queue.deleteTrack"
 
 [Playlist]
-context_add = "Queue,Playlist" # Circular dependency
+context_add = ["Queue", "Playlist"] # Circular dependency
 [Playlist.bindings]
 n = "playlistman.New"
