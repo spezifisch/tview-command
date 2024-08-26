@@ -1,0 +1,12 @@
+[Default]
+
+[Global.bindings]
+ESC = "closeModal"
+
+[Empty]
+
+[Modal]
+context_override = "Empty"
+
+[TextField]
+context_override = "Empty"

@@ -1,0 +1,10 @@
+[Default.bindings]
+a = "addToQueue"
+
+[Modal]
+context_override = "Default"
+[Modal.bindings]
+ESC = "closeModal"
+
+[TextField]
+context_override = "Modal" # This could cause a cycle or invalid hierarchy

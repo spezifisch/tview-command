@@ -1,0 +1,6 @@
+[SpecialChars.bindings]
+"key!@#$%^&*()_+" = "specialValue1"
+"key with spaces" = "specialValue2"
+
+[AnotherSection.bindings]
+"normalKey" = "normalValue"

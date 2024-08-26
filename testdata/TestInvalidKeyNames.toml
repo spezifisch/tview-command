@@ -1,0 +1,9 @@
+[Default.bindings]
+d? = "deleteTrack"
+a = "addToQueue"
+@Q = "quit"
+SPC = "openCommandPalette"
+
+[Global.bindings]
+CTRL-9 = "invalidKey"
+CTRL@ = "invalidKey2"

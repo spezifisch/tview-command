@@ -1,0 +1,8 @@
+[ValidSection.bindings]
+key1 = "value1"
+
+[InvalidSection]
+invalid_key @ invalid_value
+
+[AnotherValidSection.bindings]
+key2 = "value2"
