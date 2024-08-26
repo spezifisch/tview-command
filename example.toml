@@ -15,15 +15,17 @@ CTRL-Z = "undo"
 [Empty.bindings]
 # context with no bindings
 
-[Modal.bindings]
+[Modal]
 context_override = "Empty"
+[Modal.bindings]
 ESC = "closeModal"
 enter = "confirmAction"
 n = "nextOption"
 p = "previousOption"
 
-[TextField.bindings]
+[TextField]
 context_override = "Empty"
+[TextField.bindings]
 enter = "submitText"
 ESC = "cancelInput"
 CTRL-U = "clearText"
@@ -40,30 +42,35 @@ y = "favoriteTrack toggle"
 g = "goToTop"
 G = "goToBottom"
 
-[Queue.bindings]
+[Queue]
 context_add = "ArticlePreset,ListPreset"
+[Queue.bindings]
 d = "queue.deleteTrack"
 m = "queue.moveTrack"
 s = "shuffleQueue"
 
-[Playlist.bindings]
+[Playlist]
 context_add = "ListPreset"
+[Playlist.bindings]
 n = "playlistman.New"
 r = "playlistman.Rename"
 D = "playlistman.Delete"
 a = "playlist.Play"
 s = "playlist.ShufflePlay"
 
-[Playlist.TrackList.bindings]
+[Playlist.TrackList]
 context_add = "ArticlePreset,ListPreset"
+[Playlist.TrackList.bindings]
 d = "playlist.deleteTrack"
 
-[Browser.bindings]
+[Browser]
 context_add = "ArticlePreset,SearchPreset"
+[Browser.bindings]
 S = "shufflePlay"
 v = "viewArtist"
 a = "addArtistToQueue; cursorDown"
 
-[Browser.AlbumList.bindings]
+[Browser.AlbumList]
 context_add = "ArticlePreset"
+[Browser.AlbumList.bindings]
 a = "addAlbumToQueue; cursorDown"
