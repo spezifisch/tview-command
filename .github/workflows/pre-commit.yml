@@ -33,7 +33,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip install pre-commit
-          npm install --save-dev markdownlint-cli2
+          npm install -g markdownlint-cli2
           pre-commit install --install-hooks
 
       - name: Run pre-commit hooks

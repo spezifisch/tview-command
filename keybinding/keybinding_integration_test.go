@@ -75,6 +75,8 @@ func captureOutput(f func()) string {
 
 	w.Close()
 	os.Stdout = stdout
-	io.Copy(writer, r)
+	if _, err := io.Copy(writer, r); err != nil {
+		return ""
+	}
 	return buf.String()
 }
