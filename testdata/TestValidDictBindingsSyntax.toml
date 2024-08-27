@@ -1,0 +1,7 @@
+# Minimal example.toml
+
+[Default]
+bindings = { "A" = "AddTrackToPlaylist(CurrentTrackID)" }
+
+[Global]
+bindings = { "ESC" = "closeModal" }
