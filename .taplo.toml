@@ -1,0 +1,4 @@
+exclude = [
+    "testdata/TestGarbageContent.toml",
+    "testdata/TestInvalidKeyNames.toml",
+]
