@@ -1,10 +1,7 @@
 package keybinding
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"os"
 	"testing"
 
 	"github.com/expr-lang/expr"
@@ -83,22 +80,4 @@ func TestKeybindingIntegrationWithConfig(t *testing.T) {
 	} else {
 		t.Fatalf("Default context not found in config")
 	}
-}
-
-// captureOutput is a utility function to capture printed output during tests.
-func captureOutput(f func()) string {
-	var buf bytes.Buffer
-	writer := io.MultiWriter(os.Stdout, &buf)
-	stdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	f()
-
-	w.Close()
-	os.Stdout = stdout
-	if _, err := io.Copy(writer, r); err != nil {
-		return ""
-	}
-	return buf.String()
 }
