@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/BurntSushi/toml v1.4.0
+	github.com/expr-lang/expr v1.16.9
 	github.com/stretchr/testify v1.9.0
 )
 
