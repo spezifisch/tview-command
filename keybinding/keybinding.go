@@ -1,17 +1,16 @@
 package keybinding
 
 import (
-	"log"
-
 	"github.com/BurntSushi/toml"
 )
 
 type Config map[string]Context
 
 type Context struct {
-	Bindings        map[string]string `toml:"bindings"`
-	ContextAdd      []string          `toml:"context_add,omitempty"`
-	ContextOverride []string          `toml:"context_override,omitempty"`
+	Bindings        map[string]string      `toml:"bindings"`
+	ContextAdd      []string               `toml:"context_add,omitempty"`
+	ContextOverride []string               `toml:"context_override,omitempty"`
+	Settings        map[string]interface{} `toml:"settings,omitempty"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -37,8 +36,10 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	if !hasBindings {
-		log.Println("Warning: Config has no bindings defined.")
+		logMessage("Warning: Config has no bindings defined.")
 	}
+
+	logMessage("Config loaded.")
 
 	// It's okay if the config is empty
 	return &config, nil

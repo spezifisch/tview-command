@@ -1,9 +1,5 @@
-[Default.bindings]
-d = "deleteTrack"
-a = "addToQueue"
-Q = "quit"
-# leader key
-SPC = "openCommandPalette"
+[Global.settings]
+silent = true
 
 [Global.bindings]
 ESC = "closeModal"
@@ -11,6 +7,13 @@ CTRL-C = "copy"
 CTRL-V = "paste"
 CTRL-X = "cut"
 CTRL-Z = "undo"
+
+[Default.bindings]
+d = "deleteTrack"
+a = "addToQueue"
+Q = "quit"
+# leader key
+SPC = "openCommandPalette"
 
 [Empty.bindings]
 # context with no bindings

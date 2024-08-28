@@ -13,6 +13,7 @@ func main() {
 	config, err := keybinding.LoadConfig(configPath)
 	if err != nil || config == nil {
 		log.Fatalf("Failed to load config: %v\n", err)
+
 	}
 
 	log.Println("Configuration loaded successfully.")
