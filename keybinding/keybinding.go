@@ -31,9 +31,24 @@ func LoadConfig(path string) (*Config, error) {
 			break
 		}
 	}
-
 	if !hasBindings {
 		logMessage("Warning: Config has no bindings defined.")
+	}
+
+	// Resolve inheritance for all contexts
+	resolvedContexts := make(map[string]context.Context)
+	for contextName := range config {
+		if _, exists := resolvedContexts[contextName]; !exists {
+			// Resolve this context, and store it in resolvedContexts
+			if err := resolveContextInheritance(&config, contextName, resolvedContexts); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	// Replace the original config with the resolved contexts
+	for contextName, resolvedContext := range resolvedContexts {
+		config[contextName] = resolvedContext
 	}
 
 	logMessage("Config loaded.")
