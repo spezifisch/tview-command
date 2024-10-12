@@ -1,0 +1,13 @@
+[Default.bindings]
+a = "addToQueue"
+d = "deleteTrack"
+
+[ListPreset.bindings]
+g = "goToTop"
+G = "goToBottom"
+
+# Queue context inherits from both Default and ListPreset
+[Queue]
+context_add = ["Default", "ListPreset"]
+[Queue.bindings]
+m = "queue.moveTrack"

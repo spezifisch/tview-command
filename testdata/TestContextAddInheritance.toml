@@ -1,0 +1,9 @@
+[Default.bindings]
+d = "deleteTrack"
+a = "addToQueue"
+
+# Queue context inherits from Default (context_add inheritance)
+[Queue]
+context_add = ["Default"]
+[Queue.bindings]
+m = "queue.moveTrack"

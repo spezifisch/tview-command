@@ -1,0 +1,7 @@
+[Default.bindings]
+d = "deleteTrack"
+a = "addToQueue"
+
+# Queue context has its own binding for 'm' but should fallback to Default for 'd' and 'a'
+[Queue.bindings]
+m = "queue.moveTrack"
