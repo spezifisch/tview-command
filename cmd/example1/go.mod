@@ -1,4 +1,4 @@
-module example1
+module github.com/spezifisch/tview-command/cmd/example1
 
 go 1.22.7
 

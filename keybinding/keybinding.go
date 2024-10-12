@@ -2,17 +2,14 @@ package keybinding
 
 import (
 	"github.com/BurntSushi/toml"
+
+	"github.com/spezifisch/tview-command/context"
 )
 
-type Config map[string]Context
+type Config map[string]context.Context
 
-type Context struct {
-	Bindings        map[string]string      `toml:"bindings"`
-	ContextAdd      []string               `toml:"context_add,omitempty"`
-	ContextOverride []string               `toml:"context_override,omitempty"`
-	Settings        map[string]interface{} `toml:"settings,omitempty"`
-}
-
+// LoadConfig loads a config.toml file from path,
+// validates the "keybinding graph" and parses it.
 func LoadConfig(path string) (*Config, error) {
 	var config Config
 	if _, err := toml.DecodeFile(path, &config); err != nil {
@@ -21,12 +18,12 @@ func LoadConfig(path string) (*Config, error) {
 
 	//log.Printf("Config: %+v\n", config)
 
-	// Validate the config for cycles
-	if err := DetectCycleAndValidate(config); err != nil {
+	// Validate the config for cycles and maybe other brokenness
+	if err := ValidateConfig(config); err != nil {
 		return nil, err
 	}
 
-	// Ensure that the config has at least one context with bindings
+	// Check if config is essentially empty and warn if so
 	hasBindings := false
 	for _, context := range config {
 		if len(context.Bindings) > 0 {
