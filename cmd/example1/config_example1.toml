@@ -1,0 +1,19 @@
+[Global.bindings]
+ESC = "closeModal"
+CTRL-C = "copy"
+CTRL-V = "paste"
+CTRL-X = "cut"
+CTRL-Z = "undo"
+
+[Default.bindings]
+d = "deleteTrack"
+a = "addToQueue"
+CTRL-Q = "quit"
+# leader key
+SPC = "openCommandPalette"
+
+[Queue]
+context_add = ["Default"]
+[Queue.bindings]
+m = "queue.moveTrack"
+s = "queue.shuffle"
