@@ -12,8 +12,11 @@ CTRL-Q = "quit"
 # leader key
 SPC = "openCommandPalette"
 
+[QuickQuit.bindings]
+q = "quit"
+
 [Queue]
-context_add = ["Default"]
+context_add = ["Default", "QuickQuit"]
 [Queue.bindings]
 m = "queue.moveTrack"
 s = "queue.shuffle"
