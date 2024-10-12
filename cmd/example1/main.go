@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -12,11 +14,8 @@ import (
 func main() {
 	app := tview.NewApplication()
 
-	// Configure logrus for colored output
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp: true,
-	})
+	logger, loggerCleanup := setupLogger()
+	defer loggerCleanup()
 
 	// Set the library's log handler to use logrus for output
 	keybinding.SetLogHandler(func(msg string) {
@@ -42,15 +41,27 @@ func main() {
 			app.Draw() // Redraw the app on changes
 		})
 
-	logger.Debug("Queue screen created")
-
-	// Helper to print help instructions
-	printHelp := func() {
-		fmt.Fprintf(queueScreen, "\n\nHELP: Press 'd' to delete a track, 'a' to add to queue, 's' to shuffle, 'm' to move track, SPACE opens command palette.\nEXITS: Ctrl-q to quit, 'Q' to force-quit, Ctrl-C to *really* force-quit.\n")
+	// Create the text view for displaying the file content (./config_example1.toml)
+	fileContent, err := os.ReadFile(configPath)
+	if err != nil {
+		logger.Fatalf("Failed to read config file: %v", err)
 	}
-	queueScreen.SetText("\nPRESS any key to start demo\n")
+	fileContentScreen := tview.NewTextView().
+		SetText(string(fileContent)).
+		SetDynamicColors(true)
 
-	// Handle global key events
+	// Create the text view for displaying the config dump (resolved inheritance)
+	configDumpScreen := tview.NewTextView().
+		SetText("").
+		SetDynamicColors(true)
+
+	// Function to update the config dump screen dynamically
+	updateConfigDump := func() {
+		configDump := fmt.Sprintf("%+v", config) // Dump the config var
+		configDumpScreen.SetText(configDump)
+	}
+
+	// Handle global key events for queueScreen and update config dump
 	counter := 0
 	queueScreen.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		counter++
@@ -92,17 +103,61 @@ Triggered action: `, contextKey, counter, keyName, len(keyName))
 			logger.Warnf("No action bound for key: %s", keyName)
 		}
 
-		printHelp()
+		// Update the config dump screen with the latest config state
+		updateConfigDump()
 
 		return event
 	})
 
-	// Start the application with the queue screen as the root
+	// Split the screen into two main sections: left (queueScreen) and right (file and config dump)
+	mainSplit := tview.NewFlex().
+		AddItem(queueScreen, 0, 1, true). // Left side (queueScreen)
+		AddItem(
+			tview.NewFlex().SetDirection(tview.FlexRow). // Right side split vertically
+									AddItem(fileContentScreen, 0, 1, false).             // Top (file content)
+									AddItem(configDumpScreen, 0, 1, false), 0, 1, false) // Bottom (config dump)
+
+	// Start the application with the main split screen as the root
 	logger.Info("Starting the TUI application...")
-	if err := app.SetRoot(queueScreen, true).Run(); err != nil {
+	if err := app.SetRoot(mainSplit, true).Run(); err != nil {
 		logger.Fatalf("Application crashed: %v", err)
 	}
 	logger.Info("Application stopped")
+}
+
+func setupLogger() (*logrus.Logger, func()) {
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp: true,
+	})
+
+	// Create a temporary file for logging
+	tmpFile, err := os.CreateTemp("", "app_log_*.log")
+	if err != nil {
+		logger.Fatalf("Failed to create temp log file: %v", err)
+	}
+
+	// Set permissions to 0600 (owner can read and write)
+	if err := os.Chmod(tmpFile.Name(), 0600); err != nil {
+		logger.Fatalf("Failed to set file permissions: %v", err)
+	}
+
+	// Output to stdout the location of the log file
+	fmt.Printf("logging into %s\n", tmpFile.Name())
+
+	// Configure logrus to write logs into the temp file
+	logger.SetOutput(tmpFile)
+
+	// Define the cleanup function that will close the tmpFile
+	loggerCleanup := func() {
+		if err := tmpFile.Close(); err != nil {
+			// fallback to default log package
+			log.Printf("Failed to close log file: %v", err)
+		}
+	}
+
+	// Return both the logger and the cleanup function
+	return logger, loggerCleanup
 }
 
 // getKeyName handles printable and non-printable key inputs
