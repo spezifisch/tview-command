@@ -2,4 +2,4 @@
 
 Not Cool:
 
-* Context inheritance is not yet working. (As witnessed in `cmd/example1`.)
+- Nothing?
