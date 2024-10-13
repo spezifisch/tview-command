@@ -17,6 +17,7 @@ var (
 )
 
 type (
-	Config  = types.Config
-	Context = types.Context
+	Config       = types.Config
+	Context      = types.Context
+	ContextStack = types.ContextStack
 )
