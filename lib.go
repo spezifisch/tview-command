@@ -1,8 +1,8 @@
 package tviewcommand
 
 import (
-	"github.com/spezifisch/tview-command/context"
 	"github.com/spezifisch/tview-command/keybinding"
+	"github.com/spezifisch/tview-command/types"
 )
 
 // Re-export functions, types, and variables from keybinding package
@@ -13,6 +13,6 @@ var (
 )
 
 type (
-	Config  = keybinding.Config
-	Context = context.Context
+	Config  = types.Config
+	Context = types.Context
 )

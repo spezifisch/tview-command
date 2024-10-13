@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	"github.com/spezifisch/tview-command/keybinding"
+	"github.com/spezifisch/tview-command/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDetectCycle_NoCycle(t *testing.T) {
-	config := keybinding.Config{
+	config := types.Config{
 		"Default": {ContextOverride: []string{"Global"}},
 		"Global":  {ContextOverride: []string{}},
 	}
@@ -18,7 +19,7 @@ func TestDetectCycle_NoCycle(t *testing.T) {
 }
 
 func TestDetectCycle_SimpleCycle(t *testing.T) {
-	config := keybinding.Config{
+	config := types.Config{
 		"Default": {ContextOverride: []string{"Global"}},
 		"Global":  {ContextOverride: []string{"Default"}},
 	}
@@ -29,7 +30,7 @@ func TestDetectCycle_SimpleCycle(t *testing.T) {
 }
 
 func TestDetectCycle_ComplexCycle(t *testing.T) {
-	config := keybinding.Config{
+	config := types.Config{
 		"Default":  {ContextOverride: []string{"ContextA"}},
 		"ContextA": {ContextOverride: []string{"ContextB"}},
 		"ContextB": {ContextOverride: []string{"Default"}},
@@ -41,7 +42,7 @@ func TestDetectCycle_ComplexCycle(t *testing.T) {
 }
 
 func TestDetectCycle_ContextAddCycle(t *testing.T) {
-	config := keybinding.Config{
+	config := types.Config{
 		"Default":  {ContextAdd: []string{"ContextA"}},
 		"ContextA": {ContextAdd: []string{"ContextB"}},
 		"ContextB": {ContextAdd: []string{"Default"}},

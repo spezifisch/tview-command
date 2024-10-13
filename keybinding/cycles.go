@@ -2,9 +2,11 @@ package keybinding
 
 import (
 	"fmt"
+
+	"github.com/spezifisch/tview-command/types"
 )
 
-func DetectCycleAndValidate(config Config) error {
+func DetectCycleAndValidate(config types.Config) error {
 	visited := make(map[string]bool)
 
 	var visit func(context string) error

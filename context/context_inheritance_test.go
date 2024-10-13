@@ -1,4 +1,4 @@
-package keybinding_test
+package context_test
 
 import (
 	"testing"
@@ -23,6 +23,13 @@ func TestContextAddLogic(t *testing.T) {
 	// Ensure that bindings from both Default and ListPreset are inherited
 	assert.Equal(t, "goToTop", queueContext.Bindings["g"], "Queue context should inherit key 'g' from ListPreset")
 	assert.Equal(t, "addToQueue", queueContext.Bindings["a"], "Queue context should inherit key 'a' from Default")
+
+	// Test that keys not defined or inherited do not exist
+	_, exists := queueContext.Bindings["x"]
+	assert.False(t, exists, "Binding for 'x' should not exist in Queue")
+
+	_, exists = queueContext.Bindings["z"]
+	assert.False(t, exists, "Binding for 'z' should not exist in Queue")
 }
 
 func TestContextFallback(t *testing.T) {

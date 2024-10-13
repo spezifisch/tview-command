@@ -3,15 +3,14 @@ package keybinding
 import (
 	"github.com/BurntSushi/toml"
 
-	"github.com/spezifisch/tview-command/context"
+	tcContext "github.com/spezifisch/tview-command/context"
+	"github.com/spezifisch/tview-command/types"
 )
-
-type Config map[string]context.Context
 
 // LoadConfig loads a config.toml file from path,
 // validates the "keybinding graph" and parses it.
-func LoadConfig(path string) (*Config, error) {
-	var config Config
+func LoadConfig(path string) (*types.Config, error) {
+	var config types.Config
 	if _, err := toml.DecodeFile(path, &config); err != nil {
 		return nil, err
 	}
@@ -36,11 +35,11 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	// Resolve inheritance for all contexts
-	resolvedContexts := make(map[string]context.Context)
+	resolvedContexts := make(map[string]types.Context)
 	for contextName := range config {
 		if _, exists := resolvedContexts[contextName]; !exists {
 			// Resolve this context, and store it in resolvedContexts
-			if err := resolveContextInheritance(&config, contextName, resolvedContexts); err != nil {
+			if err := tcContext.Resolve(&config, contextName, resolvedContexts); err != nil {
 				return nil, err
 			}
 		}
@@ -52,7 +51,5 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	logMessage("Config loaded.")
-
-	// It's okay if the config is empty
 	return &config, nil
 }
