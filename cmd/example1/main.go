@@ -10,6 +10,7 @@ import (
 	"github.com/rivo/tview"
 	"github.com/sirupsen/logrus"
 	"github.com/spezifisch/tview-command/keybinding"
+	tcLog "github.com/spezifisch/tview-command/log"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 	defer loggerCleanup()
 
 	// Set the library's log handler to use logrus for output
-	keybinding.SetLogHandler(func(msg string) {
+	tcLog.SetLogHandler(func(msg string) {
 		logger.Info(msg) // Sends the log message to logrus
 	})
 
