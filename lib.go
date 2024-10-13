@@ -14,6 +14,8 @@ var (
 
 	SetLogHandler = log.SetLogHandler
 	SetLogPrefix  = log.SetLogPrefix
+
+	NewContextStack = types.NewContextStack()
 )
 
 type (
