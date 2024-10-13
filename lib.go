@@ -2,6 +2,7 @@ package tviewcommand
 
 import (
 	"github.com/spezifisch/tview-command/keybinding"
+	"github.com/spezifisch/tview-command/log"
 	"github.com/spezifisch/tview-command/types"
 )
 
@@ -10,6 +11,9 @@ import (
 var (
 	LoadConfig     = keybinding.LoadConfig
 	ValidateConfig = keybinding.ValidateConfig
+
+	SetLogHandler = log.SetLogHandler
+	SetLogPrefix  = log.SetLogPrefix
 )
 
 type (

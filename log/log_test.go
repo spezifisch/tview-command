@@ -1,20 +1,22 @@
-package keybinding
+package log_test
 
 import (
 	"strings"
 	"testing"
+
+	"github.com/spezifisch/tview-command/log"
 )
 
 func TestLogHandler(t *testing.T) {
 	var loggedMessages []string
 
 	// Custom log handler to collect log messages
-	SetLogHandler(func(msg string) {
+	log.SetLogHandler(func(msg string) {
 		loggedMessages = append(loggedMessages, msg)
 	})
 
 	// Trigger logging in the keybinding package
-	logMessage("Test log message")
+	log.LogMessage("Test log message")
 
 	// Check if the log message was captured correctly
 	expectedMessage := "tview-command: Test log message"
@@ -23,10 +25,10 @@ func TestLogHandler(t *testing.T) {
 	}
 
 	// Reset the log handler to the default
-	SetLogHandler(nil)
+	log.SetLogHandler(nil)
 
 	// Trigger another log, which should not be captured by our handler
-	logMessage("This should go to stdout")
+	log.LogMessage("This should go to stdout")
 
 	// Ensure that no new messages were captured
 	if len(loggedMessages) != 1 {

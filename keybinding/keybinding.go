@@ -4,6 +4,7 @@ import (
 	"github.com/BurntSushi/toml"
 
 	tcContext "github.com/spezifisch/tview-command/context"
+	"github.com/spezifisch/tview-command/log"
 	"github.com/spezifisch/tview-command/types"
 )
 
@@ -31,7 +32,7 @@ func LoadConfig(path string) (*types.Config, error) {
 		}
 	}
 	if !hasBindings {
-		logMessage("Warning: Config has no bindings defined.")
+		log.LogMessage("Warning: Config has no bindings defined.")
 	}
 
 	// Resolve inheritance for all contexts
@@ -50,6 +51,6 @@ func LoadConfig(path string) (*types.Config, error) {
 		config[contextName] = resolvedContext
 	}
 
-	logMessage("Config loaded.")
+	log.LogMessage("Config loaded.")
 	return &config, nil
 }
