@@ -1,0 +1,5 @@
+[Default.bindings]
+a = "defaultAction"
+
+[SpecificContext.bindings]
+b = "specificAction"

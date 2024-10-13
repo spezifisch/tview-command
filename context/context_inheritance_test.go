@@ -5,6 +5,7 @@ import (
 
 	"github.com/spezifisch/tview-command/keybinding"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestContextAddLogic(t *testing.T) {
@@ -63,4 +64,38 @@ func TestContextAddInheritance(t *testing.T) {
 	// Ensure keybindings from Default are inherited in Queue
 	assert.Equal(t, "deleteTrack", queueContext.Bindings["d"], "Binding for key 'd' should be inherited from Default")
 	assert.Equal(t, "addToQueue", queueContext.Bindings["a"], "Binding for key 'a' should be inherited from Default")
+}
+
+// Test that inheritance from Default happens when Empty is not part of ContextOverride
+func TestContextInheritWithoutEmpty(t *testing.T) {
+	configPath := "../testdata/TestContextInheritWithoutEmpty.toml"
+	config, err := keybinding.LoadConfig(configPath)
+
+	assert.NoError(t, err, "Config should load without error")
+	assert.NotNil(t, config, "Config should not be nil")
+
+	specificContext := (*config)["SpecificContext"]
+	assert.NotNil(t, specificContext, "SpecificContext should be present")
+
+	// Test that bindings from Default are inherited
+	assert.Equal(t, "defaultAction", specificContext.Bindings["a"], "SpecificContext should inherit key 'a' from Default")
+}
+
+// Test that inheritance from Default is skipped when Empty is part of ContextOverride
+func TestContextSkipInheritWithEmpty(t *testing.T) {
+	configPath := "../testdata/TestContextSkipInheritWithEmpty.toml"
+	config, err := keybinding.LoadConfig(configPath)
+
+	require.NoError(t, err, "Config should load without error")
+	require.NotNil(t, config, "Config should not be nil")
+
+	specificContext := (*config)["SpecificContext"]
+	require.NotNil(t, specificContext, "SpecificContext should be present")
+
+	// Test that bindings from Default are not inherited when Empty is in ContextOverride
+	_, exists := specificContext.Bindings["a"]
+	assert.False(t, exists, "SpecificContext should not inherit key 'a' from Default when Empty is in ContextOverride")
+
+	// Ensure that bindings defined in SpecificContext exist
+	assert.Equal(t, "specificAction", specificContext.Bindings["b"], "SpecificContext should have its own binding for key 'b'")
 }

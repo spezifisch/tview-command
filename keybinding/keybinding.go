@@ -1,6 +1,8 @@
 package keybinding
 
 import (
+	"fmt"
+
 	"github.com/BurntSushi/toml"
 
 	tcContext "github.com/spezifisch/tview-command/context"
@@ -13,14 +15,14 @@ import (
 func LoadConfig(path string) (*types.Config, error) {
 	var config types.Config
 	if _, err := toml.DecodeFile(path, &config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("toml.DecodeFile failed: %v", err)
 	}
 
 	//log.Printf("Config: %+v\n", config)
 
 	// Validate the config for cycles and maybe other brokenness
 	if err := ValidateConfig(config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ValidateConfig failed: %v", err)
 	}
 
 	// Check if config is essentially empty and warn if so

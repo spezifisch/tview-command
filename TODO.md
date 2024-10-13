@@ -1,5 +1,5 @@
 # t-c project TODOs
 
-Not Cool:
+TODO:
 
 - Nothing?

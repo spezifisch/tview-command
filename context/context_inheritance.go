@@ -25,8 +25,8 @@ func resolveContextInheritance(config *types.Config, contextName string, resolve
 		Settings: currentContext.Settings,
 	}
 
-	// Implicitly inherit from Default unless already inherited
-	if contextName != "Default" && !contains(currentContext.ContextAdd, "Default") {
+	// Implicitly inherit from Default unless already inherited OR inheriting Empty block
+	if contextName != "Default" && !contains(currentContext.ContextAdd, "Default") && !contains(currentContext.ContextOverride, "Empty") {
 		if err := resolveContextInheritance(config, "Default", resolvedContexts); err != nil {
 			// There is no Default config section in this file, so skip inheriting that.
 		} else {
@@ -46,6 +46,9 @@ func resolveContextInheritance(config *types.Config, contextName string, resolve
 
 	// Next, handle any context overrides via context_override
 	for _, parentContext := range currentContext.ContextOverride {
+		if parentContext == "Empty" {
+			continue // empty block signifies to not add a "Default" parent
+		}
 		if err := resolveContextInheritance(config, parentContext, resolvedContexts); err != nil {
 			return err
 		}

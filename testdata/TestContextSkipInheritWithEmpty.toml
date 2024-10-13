@@ -1,0 +1,9 @@
+[Default.bindings]
+a = "defaultAction"
+
+[SpecificContext]
+# this context should not inherit Default because we'ry doing this:
+context_override = ["Empty"]
+
+[SpecificContext.bindings]
+b = "specificAction"
