@@ -30,6 +30,25 @@ func (cs *ContextStack) Pop() {
 	}
 }
 
+// PopExpect removes the current context from the stack and checks against the expected element.
+// If the popped value does not match the expected value, it panics (currently).
+func (cs *ContextStack) PopExpect(expected string) {
+	if len(cs.stack) == 0 {
+		panic("PopExpect called on an empty stack")
+	}
+
+	// Get the top value before popping it
+	popped := cs.stack[len(cs.stack)-1]
+
+	// Remove the top element from the stack
+	cs.stack = cs.stack[:len(cs.stack)-1]
+
+	// Check if the popped value matches the expected value
+	if popped != expected {
+		panic(fmt.Sprintf("PopExpect: expected '%s' but got '%s'", expected, popped))
+	}
+}
+
 // Current returns the currently active context.
 func (cs *ContextStack) Current() string {
 	if len(cs.stack) > 0 {

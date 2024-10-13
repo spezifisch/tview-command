@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -82,4 +83,64 @@ func TestContextStack_Current_EmptyStack(t *testing.T) {
 
 	// Test Current() when stack is empty
 	assert.Equal(t, "Global", stack.Current(), "Current should return 'Global' even if stack is empty")
+}
+
+func TestPopExpect(t *testing.T) {
+	// Test case where PopExpect succeeds
+	t.Run("PopExpect_Success", func(t *testing.T) {
+		cs := &ContextStack{
+			stack: []string{"Global", "QueuePage", "QueueList"},
+		}
+
+		cs.PopExpect("QueueList") // This should succeed without panicking
+
+		if len(cs.stack) != 2 {
+			t.Fatalf("Expected stack length 2 after PopExpect, got %d", len(cs.stack))
+		}
+		if cs.stack[len(cs.stack)-1] != "QueuePage" {
+			t.Fatalf("Expected 'QueuePage' at the top of the stack, got '%s'", cs.stack[len(cs.stack)-1])
+		}
+	})
+
+	// Test case where PopExpect fails (mismatched value)
+	t.Run("PopExpect_Fail", func(t *testing.T) {
+		cs := &ContextStack{
+			stack: []string{"Global", "QueuePage", "QueueList"},
+		}
+
+		defer func() {
+			if r := recover(); r == nil {
+				t.Fatal("Expected panic but got none")
+			} else {
+				// Ensure panic message is as expected
+				expectedMessage := "PopExpect: expected 'QueueSidebar' but got 'QueueList'"
+				if !strings.Contains(r.(string), expectedMessage) {
+					t.Fatalf("Unexpected panic message, got: '%v'", r)
+				}
+			}
+		}()
+
+		cs.PopExpect("QueueSidebar") // This should panic with the error message
+	})
+
+	// Test case where PopExpect is called on an empty stack
+	t.Run("PopExpect_EmptyStack", func(t *testing.T) {
+		cs := &ContextStack{
+			stack: []string{},
+		}
+
+		defer func() {
+			if r := recover(); r == nil {
+				t.Fatal("Expected panic for empty stack but got none")
+			} else {
+				// Ensure panic message is as expected
+				expectedMessage := "PopExpect called on an empty stack"
+				if !strings.Contains(r.(string), expectedMessage) {
+					t.Fatalf("Unexpected panic message, got: '%v'", r)
+				}
+			}
+		}()
+
+		cs.PopExpect("AnyValue") // This should panic with the empty stack message
+	})
 }
