@@ -82,7 +82,6 @@ func main() {
 
 		// Resolve the keybindings for the Queue context dynamically
 		contextKey := "Queue"
-		currentContext := (*config)[contextKey]
 		logger.Debugf("Using context: %s", contextKey)
 
 		// Override on 'Q' to ensure quitting the application
@@ -93,8 +92,12 @@ func main() {
 			return nil
 		}
 
-		// Handle key input
-		tcEvent := tviewcommand.FromEventKey(event)
+		// Handle key input using FromEventKey
+		tcEvent := tviewcommand.FromEventKey(event, config)
+
+		// Use the LookupCommand function
+		tcEvent.LookupCommand(contextKey)
+
 		logger.Debugf("Got Event: %s", tview.Escape(tcEvent.String()))
 
 		// Update screen with event details
@@ -106,14 +109,19 @@ Event counter: %d
 Event: %s
 Triggered action: `, contextKey, counter, tview.Escape(tcEvent.String()))
 
-		// Trigger appropriate action based on the resolved keybindings
-		if action, ok := currentContext.Bindings[tcEvent.KeyName]; ok {
-			fmt.Fprintf(queueScreen, "%s", tview.Escape(action))
-			logger.Infof("Triggered action for key '%s': %s", tcEvent.KeyName, action)
+		// Use the LookupCommand function to find the action
+		escapedKeyName := tview.Escape(tcEvent.KeyName)
+		if err := tcEvent.LookupCommand(contextKey); err != nil {
+			fmt.Fprintf(queueScreen, "(internal tview-command error)")
+			logger.Errorf("No action bound for key: %s", escapedKeyName)
+		} else if tcEvent.IsBound {
+			fmt.Fprintf(queueScreen, "%s", tview.Escape(tcEvent.Command))
+			logger.Infof("Triggered action for key '%s': %s", escapedKeyName, tcEvent.Command)
 		} else {
 			fmt.Fprintf(queueScreen, "(shortcut not bound)")
-			logger.Warnf("No action bound for key: %s", tcEvent.KeyName)
+			logger.Warnf("No action bound for key: %s", escapedKeyName)
 		}
+
 		printHelp()
 
 		// Update the config dump screen with the latest config state
