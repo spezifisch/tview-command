@@ -2,6 +2,7 @@ package keybinding
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 
@@ -28,9 +29,16 @@ func LoadConfig(path string) (*types.Config, error) {
 	// Check if config is essentially empty and warn if so
 	hasBindings := false
 	for _, context := range config {
+		for key, action := range context.Bindings {
+			// Convert "Ctrl-L" (with minus) to "Ctrl+L" (with plus)
+			if strings.Contains(key, "-") {
+				newKey := strings.ReplaceAll(key, "-", "+")
+				delete(context.Bindings, key)
+				context.Bindings[newKey] = action
+			}
+		}
 		if len(context.Bindings) > 0 {
 			hasBindings = true
-			break
 		}
 	}
 	if !hasBindings {
