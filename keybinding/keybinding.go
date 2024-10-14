@@ -11,7 +11,7 @@ import (
 )
 
 // LoadConfig loads a config.toml file from path,
-// validates the "keybinding graph" and parses it.
+// validates the "keybinding graph", and parses it.
 func LoadConfig(path string) (*types.Config, error) {
 	var config types.Config
 	if _, err := toml.DecodeFile(path, &config); err != nil {

@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -23,7 +22,7 @@ func FromEventKey(ev *tcell.EventKey, config *Config) *Event {
 	}
 
 	if ev.Key() == tcell.KeyRune {
-		e.KeyName = fmt.Sprintf("Rune[%c]", ev.Rune())
+		e.KeyName = fmt.Sprintf("%c", ev.Rune())
 	} else {
 		e.KeyName = ev.Name()
 	}
@@ -41,11 +40,6 @@ func (e *Event) String() string {
 func (e *Event) LookupCommand(contextKey string) error {
 	if e.Config == nil {
 		return fmt.Errorf("tviewcommand.types.Event.Config is nil")
-	}
-
-	// If the contextKey is in the format "Rune[%s]", strip "Rune[" and "]"
-	if strings.HasPrefix(contextKey, "Rune[") && strings.HasSuffix(contextKey, "]") {
-		contextKey = strings.TrimSuffix(strings.TrimPrefix(contextKey, "Rune["), "]")
 	}
 
 	// Fetch the current context based on the contextKey

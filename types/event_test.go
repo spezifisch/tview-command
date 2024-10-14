@@ -11,7 +11,7 @@ func TestFromEventKey_RuneKey(t *testing.T) {
 	ev := tcell.NewEventKey(tcell.KeyRune, 'a', tcell.ModNone)
 	event := FromEventKey(ev, nil)
 
-	assert.Equal(t, "Rune[a]", event.KeyName)
+	assert.Equal(t, "a", event.KeyName)
 	assert.Equal(t, ev, event.OriginalEvent)
 }
 
@@ -80,13 +80,13 @@ func TestLookupCommand_ContextKeyWithRunePattern(t *testing.T) {
 	config := Config{
 		"a": Context{
 			Bindings: map[string]string{
-				"Rune[a]": "ActionA",
+				"a": "ActionA",
 			},
 		},
 	}
 
 	event := FromEventKey(tcell.NewEventKey(tcell.KeyRune, 'a', tcell.ModNone), &config)
-	err := event.LookupCommand("Rune[a]")
+	err := event.LookupCommand("a")
 
 	assert.Nil(t, err)
 	assert.True(t, event.IsBound)

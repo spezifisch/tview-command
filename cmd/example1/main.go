@@ -80,10 +80,6 @@ func main() {
 		counter++
 		logger.Debugf("Key event received: counter=%d", counter)
 
-		// Resolve the keybindings for the Queue context dynamically
-		contextKey := "Queue"
-		logger.Debugf("Using context: %s", contextKey)
-
 		// Override on 'Q' to ensure quitting the application
 		if event.Rune() == 'Q' {
 			logger.Info("User pressed 'Q' to quit")
@@ -92,11 +88,24 @@ func main() {
 			return nil
 		}
 
+		// Resolve the keybindings for the Queue context dynamically
+		contextKey := "Queue"
+		logger.Debugf("Using context: %s", contextKey)
+
 		// Handle key input using FromEventKey
 		tcEvent := tviewcommand.FromEventKey(event, config)
 
-		// Use the LookupCommand function
-		tcEvent.LookupCommand(contextKey)
+		// Use the LookupCommand function to find the action
+		if err := tcEvent.LookupCommand(contextKey); err != nil {
+			fmt.Fprintf(queueScreen, "(internal tview-command error)")
+			logger.Errorf("Internal tview-command error for key: %s", tcEvent.KeyName)
+		} else if tcEvent.IsBound {
+			fmt.Fprintf(queueScreen, "%s", tview.Escape(tcEvent.Command))
+			logger.Infof("Triggered action for key '%s': %s", tcEvent.KeyName, tcEvent.Command)
+		} else {
+			fmt.Fprintf(queueScreen, "(shortcut not bound)")
+			logger.Warnf("No action bound for key: %s", tcEvent.KeyName)
+		}
 
 		logger.Debugf("Got Event: %s", tview.Escape(tcEvent.String()))
 
@@ -108,19 +117,6 @@ Event counter: %d
 
 Event: %s
 Triggered action: `, contextKey, counter, tview.Escape(tcEvent.String()))
-
-		// Use the LookupCommand function to find the action
-		escapedKeyName := tview.Escape(tcEvent.KeyName)
-		if err := tcEvent.LookupCommand(contextKey); err != nil {
-			fmt.Fprintf(queueScreen, "(internal tview-command error)")
-			logger.Errorf("No action bound for key: %s", escapedKeyName)
-		} else if tcEvent.IsBound {
-			fmt.Fprintf(queueScreen, "%s", tview.Escape(tcEvent.Command))
-			logger.Infof("Triggered action for key '%s': %s", escapedKeyName, tcEvent.Command)
-		} else {
-			fmt.Fprintf(queueScreen, "(shortcut not bound)")
-			logger.Warnf("No action bound for key: %s", escapedKeyName)
-		}
 
 		printHelp()
 
