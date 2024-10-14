@@ -9,6 +9,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 	"github.com/sirupsen/logrus"
+	tviewcommand "github.com/spezifisch/tview-command"
 	"github.com/spezifisch/tview-command/keybinding"
 	tcLog "github.com/spezifisch/tview-command/log"
 )
@@ -93,9 +94,8 @@ func main() {
 		}
 
 		// Handle key input
-		keyName := getKeyName(event)
-
-		logger.Debugf("Key pressed: %s", keyName)
+		tcEvent := tviewcommand.FromEventKey(event)
+		logger.Debugf("Got Event: %s", tview.Escape(tcEvent.String()))
 
 		// Update screen with event details
 		queueScreen.Clear()
@@ -103,16 +103,16 @@ func main() {
 Event received!
 Event counter: %d
 
-Key: %s (length: %d)
-Triggered action: `, contextKey, counter, keyName, len(keyName))
+Event: %s
+Triggered action: `, contextKey, counter, tview.Escape(tcEvent.String()))
 
 		// Trigger appropriate action based on the resolved keybindings
-		if action, ok := currentContext.Bindings[keyName]; ok {
-			fmt.Fprintf(queueScreen, "%s", action)
-			logger.Infof("Triggered action for key '%s': %s", keyName, action)
+		if action, ok := currentContext.Bindings[tcEvent.KeyName]; ok {
+			fmt.Fprintf(queueScreen, "%s", tview.Escape(action))
+			logger.Infof("Triggered action for key '%s': %s", tcEvent.KeyName, action)
 		} else {
 			fmt.Fprintf(queueScreen, "(shortcut not bound)")
-			logger.Warnf("No action bound for key: %s", keyName)
+			logger.Warnf("No action bound for key: %s", tcEvent.KeyName)
 		}
 		printHelp()
 
@@ -168,42 +168,4 @@ func setupLogger() (*logrus.Logger, func()) {
 
 	// Return both the logger and the cleanup function
 	return logger, loggerCleanup
-}
-
-// getKeyName handles printable and non-printable key inputs
-func getKeyName(event *tcell.EventKey) string {
-	keyName := ""
-	if event.Rune() != 0 {
-		r := event.Rune()
-		if r >= 33 && r <= 126 {
-			// Printable ASCII range (basic characters)
-			keyName = string(r)
-		} else if r == 32 {
-			keyName = "SPC"
-		} else {
-			// Non-printable characters: represent as hex
-			keyName = fmt.Sprintf("0x%04X", r)
-		}
-	} else {
-		// Handle non-printable keys (e.g., ESC, Enter, Ctrl)
-		switch event.Key() {
-		case tcell.KeyESC:
-			keyName = "ESC"
-		case tcell.KeyEnter:
-			keyName = "Enter"
-		case tcell.KeyCtrlC:
-			keyName = "CTRL-C"
-		case tcell.KeyCtrlV:
-			keyName = "CTRL-V"
-		case tcell.KeyCtrlX:
-			keyName = "CTRL-X"
-		case tcell.KeyCtrlZ:
-			keyName = "CTRL-Z"
-		case tcell.KeyCtrlQ:
-			keyName = "CTRL-Q"
-		default:
-			keyName = fmt.Sprintf("keycode-%d", event.Key())
-		}
-	}
-	return keyName
 }

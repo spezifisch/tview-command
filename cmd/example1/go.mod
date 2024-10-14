@@ -3,7 +3,7 @@ module github.com/spezifisch/tview-command/cmd/example1
 go 1.22.1
 
 require (
-	github.com/gdamore/tcell/v2 v2.7.1
+	github.com/gdamore/tcell/v2 v2.7.4
 	github.com/rivo/tview v0.0.0-20240921122403-a64fc48d7654
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spezifisch/tview-command v0.0.0

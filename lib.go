@@ -16,10 +16,12 @@ var (
 	SetLogPrefix  = log.SetLogPrefix
 
 	NewContextStack = types.NewContextStack
+	FromEventKey    = types.FromEventKey
 )
 
 type (
 	Config       = types.Config
 	Context      = types.Context
 	ContextStack = types.ContextStack
+	Event        = types.Event
 )
