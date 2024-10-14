@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	tcContext "github.com/spezifisch/tview-command/context"
 	"github.com/spezifisch/tview-command/log"
@@ -28,11 +30,13 @@ func LoadConfig(path string) (*types.Config, error) {
 
 	// Check if config is essentially empty and warn if so
 	hasBindings := false
+	caser := cases.Title(language.English)
 	for _, context := range config {
 		for key, action := range context.Bindings {
-			// Convert "Ctrl-L" (with minus) to "Ctrl+L" (with plus)
+			// Convert "CTRL-L" (with minus and any case) to "Ctrl+L" (with plus)
 			if strings.Contains(key, "-") {
 				newKey := strings.ReplaceAll(key, "-", "+")
+				newKey = caser.String(strings.ToLower(newKey))
 				delete(context.Bindings, key)
 				context.Bindings[newKey] = action
 			}

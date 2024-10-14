@@ -7,9 +7,10 @@ SPC = "openCommandPalette"
 
 [Global.bindings]
 ESC = "closeModal"
-CTRL-C = "copy"
-CTRL-V = "paste"
-CTRL-X = "cut"
+# we normalize different cases to be like "Ctrl+C"
+"CTRL+X" = "cut"
+"Ctrl+C" = "copy"
+Ctrl-V = "paste"
 CTRL-Z = "undo"
 
 [Empty.bindings]

@@ -164,7 +164,7 @@ func TestValidConfig(t *testing.T) {
 	assert.NotEmpty(t, (*config)["Global"].Bindings, "Config should have contexts")
 }
 
-func TestConvertKeyBindings(t *testing.T) {
+func TestLoadConfig_ConvertKeyBindings(t *testing.T) {
 	configPath := "../testdata/TestValidConfig.toml"
 	config, err := keybinding.LoadConfig(configPath)
 
@@ -172,18 +172,17 @@ func TestConvertKeyBindings(t *testing.T) {
 	assert.NotNil(t, config, "Config should not be nil")
 	assert.NotEmpty(t, (*config)["Global"].Bindings, "Global context should have bindings")
 
-	// Check that the minus form is converted to plus form
+	// Check that the minus form is converted to "Ctrl+" form with proper case
 	globalBindings := (*config)["Global"].Bindings
 
-	assert.Contains(t, globalBindings, "ESC", "Global context should have 'ESC' binding")
-	assert.Contains(t, globalBindings, "CTRL+C", "Global context should have converted 'CTRL+C' binding")
-	assert.Contains(t, globalBindings, "CTRL+V", "Global context should have converted 'CTRL+V' binding")
-	assert.Contains(t, globalBindings, "CTRL+X", "Global context should have converted 'CTRL+X' binding")
-	assert.Contains(t, globalBindings, "CTRL+Z", "Global context should have converted 'CTRL+Z' binding")
+	assert.Contains(t, globalBindings, "Ctrl+Z", "Global context should have converted 'Ctrl+Z' binding")
+	assert.Contains(t, globalBindings, "Ctrl+C", "Global context should have converted 'Ctrl+C' binding")
+	assert.Contains(t, globalBindings, "Ctrl+V", "Global context should have converted 'Ctrl+V' binding")
+	assert.Contains(t, globalBindings, "Ctrl+X", "Global context should have converted 'Ctrl+X' binding")
 
 	assert.Equal(t, "closeModal", globalBindings["ESC"])
-	assert.Equal(t, "copy", globalBindings["CTRL+C"])
-	assert.Equal(t, "paste", globalBindings["CTRL+V"])
-	assert.Equal(t, "cut", globalBindings["CTRL+X"])
-	assert.Equal(t, "undo", globalBindings["CTRL+Z"])
+	assert.Equal(t, "copy", globalBindings["Ctrl+C"])
+	assert.Equal(t, "paste", globalBindings["Ctrl+V"])
+	assert.Equal(t, "cut", globalBindings["Ctrl+X"])
+	assert.Equal(t, "undo", globalBindings["Ctrl+Z"])
 }
