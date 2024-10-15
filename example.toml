@@ -3,10 +3,10 @@ silent = true
 
 [Global.bindings]
 ESC = "closeModal"
-CTRL-C = "copy"
-CTRL-V = "paste"
-CTRL-X = "cut"
-CTRL-Z = "undo"
+Ctrl-C = "copy"
+Ctrl-V = "paste"
+Ctrl-X = "cut"
+Ctrl-Z = "undo"
 
 [Default.bindings]
 d = "deleteTrack"
@@ -29,9 +29,9 @@ p = "previousOption"
 [TextField]
 context_override = "Empty"
 [TextField.bindings]
-enter = "submitText"
+Enter = "submitText"
 ESC = "cancelInput"
-CTRL-U = "clearText"
+Ctrl-U = "clearText"
 
 [ArticlePreset.bindings]
 a = "queue.AddTrack"
