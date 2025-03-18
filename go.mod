@@ -4,8 +4,9 @@ go 1.19
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/expr-lang/expr v1.16.9
+	github.com/expr-lang/expr v1.17.0
 	github.com/stretchr/testify v1.9.0
+	golang.org/x/text v0.14.0
 )
 
 require (
@@ -15,7 +16,6 @@ require (
 	github.com/rivo/uniseg v0.4.3 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/term v0.17.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
 )
 
 require (
